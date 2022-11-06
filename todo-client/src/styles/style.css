@@ -7,9 +7,9 @@
 body {
   background: linear-gradient(to bottom, #bd4f6c, #d7816a);
   background-position: center center;
-  background-repeat:  no-repeat;
+  background-repeat: no-repeat;
   background-attachment: fixed;
-  background-size:  cover;
+  background-size: cover;
   height: 100%;
 }
 .viral-list {
@@ -24,7 +24,7 @@ body {
   position: relative;
   top: 25%;
 }
-.center-items{
+.center-items {
   text-align: center;
   align-items: center;
 }
@@ -32,7 +32,7 @@ body {
   padding-top: 50px;
   height: 300px;
   width: 700px;
-  background: linear-gradient(to right, #A40606, #A71444);
+  background: linear-gradient(to right, #a40606, #a71444);
   background-clip: content-box;
 }
 .main-cont {

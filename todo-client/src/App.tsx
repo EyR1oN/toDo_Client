@@ -1,29 +1,27 @@
 import React from "react";
 import "antd/dist/antd.css";
-import { Button, Input, Typography, List } from "antd";
+import { Button, Input, Typography, List, Divider } from "antd";
 import VirtualList from "rc-virtual-list";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PlusOutlined, CloseOutlined, CheckOutlined } from "@ant-design/icons";
 import "./styles/style.css";
+import { getToDoList, postToDo, deleteToDo } from "./api/toDoApi";
+import ToDoModel from "./models/ToDoModel";
 
 const { Title } = Typography;
 
-type ToDoData = {
-  id: number;
-  describe: string;
-}
-
 const App: React.FC = () => {
-  const [data, setData] = useState<ToDoData[]>([
-    {id: 1, describe: "first column"},
-    {id: 2, describe: "second column"},
-    {id: 3, describe: "third column"},
-    {id: 4, describe: "fourth column"},
-    {id: 5, describe: "fifth column"},
-    {id: 6, describe: "sixth column"},
-    {id: 7, describe: "seventh column"},
-  ]);
-  const [toDo, setToDo] = useState<string>("");
+  const [data, setData]: [
+    ToDoModel[],
+    React.Dispatch<React.SetStateAction<ToDoModel[]>>
+  ] = useState<ToDoModel[]>([]);
+  useEffect((): void => {
+    getToDoList(setData);
+  }, []);
+  const [toDo, setToDo]: [
+    string,
+    React.Dispatch<React.SetStateAction<string>>
+  ] = useState<string>("");
 
   return (
     <div className="center-items">
@@ -42,7 +40,10 @@ const App: React.FC = () => {
             <Button
               type="primary"
               size="middle"
-              onClick={(e) => setData([...data, {id: data.length + 1, describe: toDo}])}
+              onClick={(e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+                console.log(toDo);
+                postToDo({ name: toDo, isDone: false });
+              }}
             >
               Add
             </Button>
@@ -53,17 +54,40 @@ const App: React.FC = () => {
       <div className="center-cont">
         <div className="main-cont">
           <List>
+            <Divider orientation="left">All Categories</Divider>
             <VirtualList
               className="viral-list"
               data={data}
               height={400}
               itemHeight={47}
-              itemKey="item"
+              itemKey="id"
             >
-              {(item: ToDoData) => (
+              {(item: ToDoModel) => (
                 <List.Item key={item.id}>
-                  <PlusOutlined onClick={(): void => console.log(item)} />
-                  <div>{item.describe}</div>
+                  {item.isDone ? (
+                    <CheckOutlined
+                      style={{ color: "green" }}
+                      onClick={(): void => {
+                        item.isDone = !item.isDone;
+                      }}
+                    />
+                  ) : (
+                    <PlusOutlined
+                      style={{ color: "blue" }}
+                      onClick={(): void => {
+                        item.isDone = !item.isDone;
+                      }}
+                    />
+                  )}
+                  <div>
+                    {item.name}{" "}
+                    <CloseOutlined
+                      style={{ color: "red" }}
+                      onClick={(): void => {
+                        deleteToDo(item.id);
+                      }}
+                    />
+                  </div>
                 </List.Item>
               )}
             </VirtualList>
