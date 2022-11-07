@@ -9,7 +9,7 @@ export async function getCategories(
   await axios
     .get(baseURL + "category")
     .then(function (response): void {
-      console.log(response.data);
+      // console.log(response.data);
       callback(response.data);
     })
     .catch(function (error): void {
@@ -17,11 +17,11 @@ export async function getCategories(
     });
 }
 
-export async function postToDo(categoryModel: object): Promise<void> {
+export async function postCategory(categoryModel: object): Promise<void> {
   await axios
     .post(baseURL + "category", categoryModel)
     .then(function (response): void {
-      console.log(response);
+      //  console.log(response);
     })
     .catch(function (error): void {
       console.log(error);
