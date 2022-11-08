@@ -1,5 +1,5 @@
 import { Typography } from "antd";
-import React from "react";
+import "../styles/style.css";
 
 const { Title } = Typography;
 
