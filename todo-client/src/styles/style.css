@@ -1,4 +1,4 @@
-* {
+/* * {
   margin: 0;
   padding: 0;
   -webkit-box-sizing: border-box;
@@ -20,10 +20,7 @@ body {
   display: flex;
   justify-content: center;
 }
-.center-items {
-  text-align: center;
-  align-items: center;
-}
+
 .header {
   display: flex;
   justify-content: center;
@@ -46,4 +43,30 @@ body {
 .float-right {
   float: right;
   padding-right: 30px;
+} */
+
+logo {
+  float: left;
+  width: 120px;
+  height: 31px;
+  margin: 16px 24px 16px 0;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.ant-row-rtl .logo {
+  float: right;
+  margin: 16px 0 16px 24px;
+}
+
+.site-layout-background {
+  background: #fff;
+}
+.center-items {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.box {
+  display: flex;
+  gap: 10px;
 }
