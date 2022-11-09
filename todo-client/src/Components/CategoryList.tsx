@@ -13,13 +13,14 @@ type Props = {
 const { Title } = Typography;
 
 export default function CategoryList(props: Props) {
+  const [refetch, setRefetch] = useState(false);
   const [categories, setCategories]: [
     CategoryModel[],
     React.Dispatch<React.SetStateAction<CategoryModel[]>>
   ] = useState<CategoryModel[]>([]);
   useEffect((): void => {
-    getCategories(setCategories);
-  }, []);
+    getCategories(setCategories, setRefetch);
+  }, [refetch]);
 
   const [category, setCategory]: [
     string,
@@ -31,11 +32,12 @@ export default function CategoryList(props: Props) {
       <div className="center-cont">
         <div className="header-categories">
           <div>
-            <Title level={5}>Categories</Title>
+            <h2>Categories</h2>
           </div>
         </div>
       </div>
       <Input
+        maxLength={50}
         size="middle"
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
           setCategory(e.target.value)
@@ -50,6 +52,7 @@ export default function CategoryList(props: Props) {
         onClick={(e: React.MouseEvent<HTMLElement, MouseEvent>) => {
           console.log(category);
           postCategory({ name: category });
+          setRefetch(true);
         }}
       >
         Add
@@ -58,7 +61,6 @@ export default function CategoryList(props: Props) {
         <VirtualList
           className="viral-list"
           data={categories}
-          //height={400}
           itemHeight={47}
           itemKey="id"
         >
@@ -67,7 +69,7 @@ export default function CategoryList(props: Props) {
               <List.Item
                 key={item.id}
                 onClick={() => props.chosenCategory(item)}
-                className={"center-items pointer"}
+                className={"center-items pointer list"}
               >
                 <Category item={item} />
               </List.Item>

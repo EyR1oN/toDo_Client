@@ -4,10 +4,13 @@ import {
   DeleteOutlined,
   CheckCircleOutlined,
   CloseSquareOutlined,
+  ExclamationCircleOutlined
 } from "@ant-design/icons";
-import { Input } from "antd";
+import { Input, Modal } from "antd";
 import CategoryModel from "../models/CategoryModel";
 import { deleteCategory, putCategory } from "../api/categoryApi";
+
+const { confirm } = Modal;
 
 export default function Category({ item }: any) {
   const [categoryName, setCategoryName]: [
@@ -20,21 +23,38 @@ export default function Category({ item }: any) {
     React.Dispatch<React.SetStateAction<boolean>>
   ] = useState<boolean>(true);
 
+  const showDeleteConfirm = () => {
+    confirm({
+      title: 'Are you sure delete this category?',
+      icon: <ExclamationCircleOutlined />,
+      content: 'Some descriptions',
+      okText: 'Yes',
+      okType: 'danger',
+      cancelText: 'No',
+      onOk() {
+        deleteCategory(item.id);
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
+  };
+
+
   return (
     <>
       {showEditCategory && (
         <div className="inline-block">
-          <div className="float-left">{item.name} </div>
+          <span className="float-left">{item.name} </span>
           <div className="float-right">
             <EditOutlined
               onClick={() => {
                 setShowEditCategory(!showEditCategory);
+                setCategoryName(item.name);
               }}
             />{" "}
             <DeleteOutlined
-              onClick={() => {
-                deleteCategory(item.id);
-              }}
+              onClick={showDeleteConfirm}
             />
           </div>
         </div>
@@ -42,6 +62,7 @@ export default function Category({ item }: any) {
       {!showEditCategory && (
         <>
           <Input
+            maxLength={50}
             size="middle"
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setCategoryName(e.target.value)
@@ -64,6 +85,7 @@ export default function Category({ item }: any) {
             }}
           />
         </>
+        
       )}
     </>
   );

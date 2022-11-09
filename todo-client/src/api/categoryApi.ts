@@ -4,7 +4,8 @@ import CategoryModel from "../models/CategoryModel";
 const baseURL: string = "https://localhost:44309/";
 
 export async function getCategories(
-  callback: React.Dispatch<React.SetStateAction<CategoryModel[]>>
+  callback: React.Dispatch<React.SetStateAction<CategoryModel[]>>,
+  setRefetch: any
 ): Promise<void> {
   await axios
     .get(baseURL + "category")
@@ -14,6 +15,9 @@ export async function getCategories(
     })
     .catch(function (error): void {
       console.log(error);
+    })
+    .finally((): void => {
+      setRefetch(false);
     });
 }
 
@@ -22,7 +26,7 @@ export async function postCategory(categoryModel: object): Promise<void> {
     .post(baseURL + "category", categoryModel)
     .then(function (response): void {
       //  console.log(response);
-      window.location.reload();
+      //  window.location.reload();
     })
     .catch(function (error): void {
       console.log(error);
@@ -35,7 +39,7 @@ export async function deleteCategory(id: number): Promise<void> {
     .delete(baseURL + `category?id=${id}`)
     .then(function (response): void {
       console.log(response);
-      window.location.reload();
+      //  window.location.reload();
     })
     .catch(function (error): void {
       console.log(error);
@@ -47,7 +51,7 @@ export async function putCategory(categoryModel: CategoryModel): Promise<void> {
     .put(baseURL + "category", categoryModel)
     .then(function (response): void {
       console.log(response);
-      window.location.reload();
+      //  window.location.reload();
     })
     .catch(function (error): void {
       console.log(error);
