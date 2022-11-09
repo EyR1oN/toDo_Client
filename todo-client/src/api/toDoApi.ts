@@ -21,7 +21,7 @@ export async function postToDo(todoModel: object): Promise<void> {
     .post(baseURL + "todo", todoModel)
     .then(function (response): void {
       console.log(response);
-      window.location.reload();
+      // window.location.reload();
     })
     .catch(function (error): void {
       console.log(error);
@@ -34,7 +34,7 @@ export async function deleteToDo(id: number): Promise<void> {
     .delete(baseURL + `todo?id=${id}`)
     .then(function (response): void {
       console.log(response);
-      window.location.reload();
+      // window.location.reload();
     })
     .catch(function (error): void {
       console.log(error);
@@ -46,7 +46,7 @@ export async function putToDo(todoModel: ToDoModel): Promise<void> {
     .put(baseURL + "todo", todoModel)
     .then(function (response): void {
       console.log(response);
-      window.location.reload();
+      // window.location.reload();
     })
     .catch(function (error): void {
       console.log(error);

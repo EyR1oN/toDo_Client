@@ -21,7 +21,7 @@ const MenuComponent: React.FC = () => {
           <CategoryList chosenCategory={setChosenCategory} />
         </Sider>
         <Layout style={{ padding: "0 24px 24px" }}>
-          <Breadcrumb style={{ margin: "16px 0" }}>
+          <Breadcrumb style={{ margin: "16px 0" }} className="list">
             <Breadcrumb.Item>Category</Breadcrumb.Item>
             <Breadcrumb.Item>{chosenCategory.name}</Breadcrumb.Item>
           </Breadcrumb>

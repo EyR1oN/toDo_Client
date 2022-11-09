@@ -24,11 +24,12 @@ export default function Category({ item }: any) {
     <>
       {showEditCategory && (
         <div className="inline-block">
-          <div className="float-left">{item.name} </div>
+          <span className="float-left">{item.name} </span>
           <div className="float-right">
             <EditOutlined
               onClick={() => {
                 setShowEditCategory(!showEditCategory);
+                setCategoryName(item.name);
               }}
             />{" "}
             <DeleteOutlined
@@ -38,10 +39,12 @@ export default function Category({ item }: any) {
             />
           </div>
         </div>
+        // <span>ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</span>
       )}
       {!showEditCategory && (
         <>
           <Input
+            maxLength={50}
             size="middle"
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setCategoryName(e.target.value)

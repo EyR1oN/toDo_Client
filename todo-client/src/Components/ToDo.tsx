@@ -53,6 +53,7 @@ export default function ToDo({ toDo }: any) {
               style={{ fontSize: "large" }}
               onClick={() => {
                 setShowEditToDo(!showEditToDo);
+                setToDoName(toDo.name);
               }}
             />{" "}
             <DeleteOutlined

@@ -22,6 +22,7 @@ export default function ToDoList({ category }: any) {
     <>
       <div className="center-items">
         <Input
+          maxLength={50}
           size="middle"
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             setToDo(e.target.value)
@@ -56,7 +57,7 @@ export default function ToDoList({ category }: any) {
           {(item: ToDoModel) => {
             if (item.categoryId == category.id)
               return (
-                <List.Item key={item.id}>
+                <List.Item key={item.id} className="list">
                   <ToDo toDo={item}></ToDo>
                 </List.Item>
               );

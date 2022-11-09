@@ -61,6 +61,7 @@ logo {
   width: 100%;
   background: linear-gradient(to right, #2a2a72, #009ffd);
   background-clip: content-box;
+  color: #fff;
 }
 
 .header-categories {
@@ -75,13 +76,15 @@ logo {
 .float-left {
   float: left;
   margin-left: 10px;
+  margin-right: 10px;
 }
 .float-right {
   float: right;
   margin-right: 10px;
+  margin-left: 10px;
 }
 .inline-block {
-  display: inline-block;
+  display: block;
   width: 100%;
 }
 .span-st {
@@ -97,4 +100,13 @@ logo {
 }
 .pointer:hover {
   background: linear-gradient(to right, #99a7ff, #70b6fb);
+}
+.font {
+  font-size: xx-large;
+  font-weight: bold;
+  color: white;
+  font-family: "Courier New", monospace;
+}
+.list {
+  word-break: break-word;
 }
