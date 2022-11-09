@@ -3,15 +3,17 @@ import {
   CloseSquareOutlined,
   CheckSquareOutlined,
   PlusSquareOutlined,
-} from "@ant-design/icons";
-import {
   EditOutlined,
   DeleteOutlined,
   CheckCircleOutlined,
+  ExclamationCircleOutlined
 } from "@ant-design/icons";
 import ToDoModel from "../models/ToDoModel";
 import { deleteToDo, putToDo } from "../api/toDoApi";
-import { Input } from "antd";
+import { Input, Modal } from "antd";
+
+
+const { confirm } = Modal;
 
 export default function ToDo({ toDo }: any) {
   const [toDoName, setToDoName]: [
@@ -23,6 +25,23 @@ export default function ToDo({ toDo }: any) {
     boolean,
     React.Dispatch<React.SetStateAction<boolean>>
   ] = useState<boolean>(true);
+
+  const showDeleteConfirm = () => {
+    confirm({
+      title: 'Are you sure delete this category?',
+      icon: <ExclamationCircleOutlined />,
+      content: 'Some descriptions',
+      okText: 'Yes',
+      okType: 'danger',
+      cancelText: 'No',
+      onOk() {
+        deleteToDo(toDo.id);
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
+  };
 
   return (
     <>
@@ -58,9 +77,7 @@ export default function ToDo({ toDo }: any) {
             />{" "}
             <DeleteOutlined
               style={{ fontSize: "large" }}
-              onClick={() => {
-                deleteToDo(toDo.id);
-              }}
+              onClick={showDeleteConfirm}
             />
           </>
         )}

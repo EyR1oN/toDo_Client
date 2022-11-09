@@ -4,10 +4,13 @@ import {
   DeleteOutlined,
   CheckCircleOutlined,
   CloseSquareOutlined,
+  ExclamationCircleOutlined
 } from "@ant-design/icons";
-import { Input } from "antd";
+import { Input, Modal } from "antd";
 import CategoryModel from "../models/CategoryModel";
 import { deleteCategory, putCategory } from "../api/categoryApi";
+
+const { confirm } = Modal;
 
 export default function Category({ item }: any) {
   const [categoryName, setCategoryName]: [
@@ -19,6 +22,24 @@ export default function Category({ item }: any) {
     boolean,
     React.Dispatch<React.SetStateAction<boolean>>
   ] = useState<boolean>(true);
+
+  const showDeleteConfirm = () => {
+    confirm({
+      title: 'Are you sure delete this category?',
+      icon: <ExclamationCircleOutlined />,
+      content: 'Some descriptions',
+      okText: 'Yes',
+      okType: 'danger',
+      cancelText: 'No',
+      onOk() {
+        deleteCategory(item.id);
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
+  };
+
 
   return (
     <>
@@ -33,13 +54,10 @@ export default function Category({ item }: any) {
               }}
             />{" "}
             <DeleteOutlined
-              onClick={() => {
-                deleteCategory(item.id);
-              }}
+              onClick={showDeleteConfirm}
             />
           </div>
         </div>
-        // <span>ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</span>
       )}
       {!showEditCategory && (
         <>
@@ -67,6 +85,7 @@ export default function Category({ item }: any) {
             }}
           />
         </>
+        
       )}
     </>
   );
