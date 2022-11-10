@@ -4,16 +4,19 @@ import ToDoModel from "../models/ToDoModel";
 const baseURL: string = "https://localhost:44309/";
 
 export async function getToDoList(
-  callback: React.Dispatch<React.SetStateAction<ToDoModel[]>>
+  callback: React.Dispatch<React.SetStateAction<ToDoModel[]>>,
+  setRefetch: any
 ): Promise<void> {
   await axios
     .get(baseURL + "todo")
     .then(function (response): void {
       callback(response.data);
+      setRefetch(false);
     })
     .catch(function (error): void {
       console.log(error);
-    });
+    })
+    .finally((): void => {});
 }
 
 export async function postToDo(todoModel: object): Promise<void> {

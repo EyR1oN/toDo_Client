@@ -12,13 +12,12 @@ export async function getCategories(
     .then(function (response): void {
       // console.log(response.data);
       callback(response.data);
+      setRefetch(false);
     })
     .catch(function (error): void {
       console.log(error);
     })
-    .finally((): void => {
-      setRefetch(false);
-    });
+    .finally((): void => {});
 }
 
 export async function postCategory(categoryModel: object): Promise<void> {

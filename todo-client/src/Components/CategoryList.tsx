@@ -4,13 +4,10 @@ import VirtualList from "rc-virtual-list";
 import CategoryModel from "../models/CategoryModel";
 import { getCategories, postCategory } from "../api/categoryApi";
 import Category from "./Category";
-import { Typography } from "antd";
 
 type Props = {
   chosenCategory: Dispatch<SetStateAction<CategoryModel>>;
 };
-
-const { Title } = Typography;
 
 export default function CategoryList(props: Props) {
   const [refetch, setRefetch] = useState(false);
@@ -18,6 +15,7 @@ export default function CategoryList(props: Props) {
     CategoryModel[],
     React.Dispatch<React.SetStateAction<CategoryModel[]>>
   ] = useState<CategoryModel[]>([]);
+
   useEffect((): void => {
     getCategories(setCategories, setRefetch);
   }, [refetch]);
@@ -32,7 +30,7 @@ export default function CategoryList(props: Props) {
       <div className="center-cont">
         <div className="header-categories">
           <div>
-            <h2>Categories</h2>
+            <h2 className="font font-size-medium">Categories</h2>
           </div>
         </div>
       </div>
@@ -71,7 +69,7 @@ export default function CategoryList(props: Props) {
                 onClick={() => props.chosenCategory(item)}
                 className={"center-items pointer list"}
               >
-                <Category item={item} />
+                <Category item={item} setCategories={setCategories} />
               </List.Item>
             );
           }}

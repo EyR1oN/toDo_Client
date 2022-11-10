@@ -1,18 +1,28 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   EditOutlined,
   DeleteOutlined,
   CheckCircleOutlined,
   CloseSquareOutlined,
-  ExclamationCircleOutlined
+  ExclamationCircleOutlined,
 } from "@ant-design/icons";
 import { Input, Modal } from "antd";
 import CategoryModel from "../models/CategoryModel";
-import { deleteCategory, putCategory } from "../api/categoryApi";
+import { deleteCategory, getCategories, putCategory } from "../api/categoryApi";
 
 const { confirm } = Modal;
+type Props = {
+  item: any;
+  setCategories: React.Dispatch<React.SetStateAction<CategoryModel[]>>;
+};
 
-export default function Category({ item }: any) {
+export default function Category(props: Props) {
+  const [refetch, setRefetch] = useState(false);
+
+  useEffect((): void => {
+    getCategories(props.setCategories, setRefetch);
+  }, [refetch]);
+
   const [categoryName, setCategoryName]: [
     string,
     React.Dispatch<React.SetStateAction<string>>
@@ -25,37 +35,36 @@ export default function Category({ item }: any) {
 
   const showDeleteConfirm = () => {
     confirm({
-      title: 'Are you sure delete this category?',
+      title: "Are you sure delete this category?",
       icon: <ExclamationCircleOutlined />,
-      content: 'Some descriptions',
-      okText: 'Yes',
-      okType: 'danger',
-      cancelText: 'No',
+      content: "Some descriptions",
+      okText: "Yes",
+      okType: "danger",
+      cancelText: "No",
       onOk() {
-        deleteCategory(item.id);
+        deleteCategory(props.item.id);
+        window.location.reload();
+        setRefetch(true);
       },
       onCancel() {
-        console.log('Cancel');
+        console.log("Cancel");
       },
     });
   };
-
 
   return (
     <>
       {showEditCategory && (
         <div className="inline-block">
-          <span className="float-left">{item.name} </span>
+          <span className="float-left">{props.item.name} </span>
           <div className="float-right">
             <EditOutlined
               onClick={() => {
                 setShowEditCategory(!showEditCategory);
-                setCategoryName(item.name);
+                setCategoryName(props.item.name);
               }}
             />{" "}
-            <DeleteOutlined
-              onClick={showDeleteConfirm}
-            />
+            <DeleteOutlined onClick={showDeleteConfirm} />
           </div>
         </div>
       )}
@@ -67,15 +76,16 @@ export default function Category({ item }: any) {
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setCategoryName(e.target.value)
             }
-            defaultValue={item.name}
+            defaultValue={props.item.name}
             placeholder={"change todo"}
           ></Input>{" "}
           <CheckCircleOutlined
             style={{ color: "green" }}
             onClick={() => {
-              let model: CategoryModel = item;
+              let model: CategoryModel = props.item;
               model.name = categoryName;
               putCategory(model);
+              setShowEditCategory(!showEditCategory);
             }}
           />
           <CloseSquareOutlined
@@ -85,7 +95,6 @@ export default function Category({ item }: any) {
             }}
           />
         </>
-        
       )}
     </>
   );
