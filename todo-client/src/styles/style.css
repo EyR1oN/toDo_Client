@@ -70,7 +70,7 @@ logo {
   align-items: center;
   height: 50px;
   width: 100%;
-  background-color: #009ffd;
+  background: linear-gradient(to bottom, #4141ad, #009ffd);
   background-clip: content-box;
 }
 .float-left {
@@ -102,11 +102,16 @@ logo {
   background: linear-gradient(to right, #99a7ff, #70b6fb);
 }
 .font {
-  font-size: xx-large;
   font-weight: bold;
   color: white;
   font-family: "Courier New", monospace;
 }
 .list {
   word-break: break-word;
+}
+.font-size-large {
+  font-size: xx-large;
+}
+.font-size-medium {
+  font-size: medium;
 }

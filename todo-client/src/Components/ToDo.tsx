@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   CloseSquareOutlined,
   CheckSquareOutlined,
@@ -6,20 +6,51 @@ import {
   EditOutlined,
   DeleteOutlined,
   CheckCircleOutlined,
-  ExclamationCircleOutlined
+  ExclamationCircleOutlined,
 } from "@ant-design/icons";
 import ToDoModel from "../models/ToDoModel";
-import { deleteToDo, putToDo } from "../api/toDoApi";
+import { deleteToDo, getToDoList, putToDo } from "../api/toDoApi";
 import { Input, Modal } from "antd";
-
 
 const { confirm } = Modal;
 
-export default function ToDo({ toDo }: any) {
+type Props = {
+  toDo: any;
+  setToDos: React.Dispatch<React.SetStateAction<ToDoModel[]>>;
+};
+
+export default function ToDo(props: Props) {
   const [toDoName, setToDoName]: [
     string,
     React.Dispatch<React.SetStateAction<string>>
   ] = useState<string>("");
+
+  useEffect((): void => {
+    getToDoList().then((resp): void => {
+      props.setToDos(resp.data);
+    });
+  }, []);
+
+  const onRename = (): void => {
+    let model: ToDoModel = props.toDo;
+    model.name = toDoName;
+    putToDo(model).then(function (response): void {
+      getToDoList().then((resp): void => {
+        props.setToDos(resp.data);
+      });
+    });
+    setShowEditToDo(!showEditToDo);
+  };
+
+  const onChangeStatus = (): void => {
+    let toDoVal: ToDoModel = props.toDo;
+    toDoVal.isDone = !toDoVal.isDone;
+    putToDo(toDoVal).then(function (response): void {
+      getToDoList().then((resp): void => {
+        props.setToDos(resp.data);
+      });
+    });
+  };
 
   const [showEditToDo, setShowEditToDo]: [
     boolean,
@@ -28,51 +59,47 @@ export default function ToDo({ toDo }: any) {
 
   const showDeleteConfirm = () => {
     confirm({
-      title: 'Are you sure delete this category?',
+      title: "Are you sure delete this category?",
       icon: <ExclamationCircleOutlined />,
-      content: 'Some descriptions',
-      okText: 'Yes',
-      okType: 'danger',
-      cancelText: 'No',
+      content: "Some descriptions",
+      okText: "Yes",
+      okType: "danger",
+      cancelText: "No",
       onOk() {
-        deleteToDo(toDo.id);
+        deleteToDo(props.toDo.id).then(function (response): void {
+          getToDoList().then((resp): void => {
+            props.setToDos(resp.data);
+          });
+        });
       },
       onCancel() {
-        console.log('Cancel');
+        //console.log("Cancel");
       },
     });
   };
 
   return (
     <>
-      {toDo.isDone ? (
+      {props.toDo.isDone ? (
         <CheckSquareOutlined
           style={{ color: "green", fontSize: "large" }}
-          onClick={(): void => {
-            let toDoVal: ToDoModel = toDo;
-            toDoVal.isDone = !toDoVal.isDone;
-            putToDo(toDoVal);
-          }}
+          onClick={onChangeStatus}
         />
       ) : (
         <PlusSquareOutlined
           style={{ color: "blue", fontSize: "large" }}
-          onClick={(): void => {
-            let toDoVal: ToDoModel = toDo;
-            toDoVal.isDone = !toDoVal.isDone;
-            putToDo(toDoVal);
-          }}
+          onClick={onChangeStatus}
         />
       )}
       <div>
         {showEditToDo && (
           <>
-            <span className="span-st">{toDo.name}</span>
+            <span className="span-st">{props.toDo.name}</span>
             <EditOutlined
               style={{ fontSize: "large" }}
               onClick={() => {
                 setShowEditToDo(!showEditToDo);
-                setToDoName(toDo.name);
+                setToDoName(props.toDo.name);
               }}
             />{" "}
             <DeleteOutlined
@@ -89,16 +116,12 @@ export default function ToDo({ toDo }: any) {
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setToDoName(e.target.value)
               }
-              defaultValue={toDo.name}
+              defaultValue={props.toDo.name}
               placeholder={"change todo"}
             ></Input>{" "}
             <CheckCircleOutlined
               style={{ color: "green", fontSize: "large" }}
-              onClick={() => {
-                let model: ToDoModel = toDo;
-                model.name = toDoName;
-                putToDo(model);
-              }}
+              onClick={onRename}
             />
             <CloseSquareOutlined
               style={{ color: "red", fontSize: "large" }}

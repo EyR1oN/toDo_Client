@@ -4,35 +4,46 @@ import VirtualList from "rc-virtual-list";
 import CategoryModel from "../models/CategoryModel";
 import { getCategories, postCategory } from "../api/categoryApi";
 import Category from "./Category";
-import { Typography } from "antd";
 
 type Props = {
   chosenCategory: Dispatch<SetStateAction<CategoryModel>>;
 };
 
-const { Title } = Typography;
-
 export default function CategoryList(props: Props) {
-  const [refetch, setRefetch] = useState(false);
   const [categories, setCategories]: [
     CategoryModel[],
     React.Dispatch<React.SetStateAction<CategoryModel[]>>
   ] = useState<CategoryModel[]>([]);
+
   useEffect((): void => {
-    getCategories(setCategories, setRefetch);
-  }, [refetch]);
+    getCategories().then((resp): void => {
+      setCategories(resp.data);
+    });
+  }, []);
 
   const [category, setCategory]: [
     string,
     React.Dispatch<React.SetStateAction<string>>
   ] = useState<string>("");
 
+  const onAdd = (e: React.MouseEvent<HTMLElement, MouseEvent>): void => {
+    postCategory({ name: category })
+      .then(function (response): void {
+        getCategories().then((resp): void => {
+          setCategories(resp.data);
+        });
+      })
+      .catch(function (error): void {
+        console.log(error);
+      });
+  };
+
   return (
     <>
       <div className="center-cont">
         <div className="header-categories">
           <div>
-            <h2>Categories</h2>
+            <h2 className="font font-size-medium">Categories</h2>
           </div>
         </div>
       </div>
@@ -50,9 +61,7 @@ export default function CategoryList(props: Props) {
         type="primary"
         size="middle"
         onClick={(e: React.MouseEvent<HTMLElement, MouseEvent>) => {
-          console.log(category);
-          postCategory({ name: category });
-          setRefetch(true);
+          onAdd(e);
         }}
       >
         Add
@@ -71,7 +80,7 @@ export default function CategoryList(props: Props) {
                 onClick={() => props.chosenCategory(item)}
                 className={"center-items pointer list"}
               >
-                <Category item={item} />
+                <Category item={item} setCategories={setCategories} />
               </List.Item>
             );
           }}
