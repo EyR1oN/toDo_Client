@@ -8,7 +8,7 @@ import {
 } from "@ant-design/icons";
 import { Input, Modal } from "antd";
 import CategoryModel from "../models/CategoryModel";
-import { deleteCategory, getCategories, putCategory } from "../api/categoryApi";
+import { getCategories, putCategory, deleteCategory } from "../api/categoryApi";
 
 const { confirm } = Modal;
 type Props = {
@@ -17,16 +17,16 @@ type Props = {
 };
 
 export default function Category(props: Props) {
-  const [refetch, setRefetch] = useState(false);
-
   useEffect((): void => {
-    getCategories(props.setCategories, setRefetch);
-  }, [refetch]);
+    getCategories().then((resp): void => {
+      props.setCategories(resp.data);
+    });
+  }, []);
 
   const [categoryName, setCategoryName]: [
     string,
     React.Dispatch<React.SetStateAction<string>>
-  ] = useState<string>("");
+  ] = useState<string>(props.item.name);
 
   const [showEditCategory, setShowEditCategory]: [
     boolean,
@@ -42,14 +42,28 @@ export default function Category(props: Props) {
       okType: "danger",
       cancelText: "No",
       onOk() {
-        deleteCategory(props.item.id);
+        deleteCategory(props.item.id).then((resp) => {
+          getCategories().then((resp): void => {
+            props.setCategories(resp.data);
+          });
+        });
         window.location.reload();
-        setRefetch(true);
       },
       onCancel() {
         console.log("Cancel");
       },
     });
+  };
+
+  const onRename = (): void => {
+    let model: CategoryModel = props.item;
+    model.name = categoryName;
+    putCategory(model).then(function (response): void {
+      getCategories().then((resp): void => {
+        props.setCategories(resp.data);
+      });
+    });
+    setShowEditCategory(!showEditCategory);
   };
 
   return (
@@ -76,18 +90,10 @@ export default function Category(props: Props) {
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setCategoryName(e.target.value)
             }
-            defaultValue={props.item.name}
+            defaultValue={categoryName}
             placeholder={"change todo"}
           ></Input>{" "}
-          <CheckCircleOutlined
-            style={{ color: "green" }}
-            onClick={() => {
-              let model: CategoryModel = props.item;
-              model.name = categoryName;
-              putCategory(model);
-              setShowEditCategory(!showEditCategory);
-            }}
-          />
+          <CheckCircleOutlined style={{ color: "green" }} onClick={onRename} />
           <CloseSquareOutlined
             style={{ color: "red" }}
             onClick={(): void => {

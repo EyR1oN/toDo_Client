@@ -8,11 +8,11 @@ import ToDo from "./ToDo";
 import MyInput from "./MyInput";
 
 export default function ToDoList({ category }: any) {
-  const [refetch, setRefetch] = useState(false);
-
   useEffect((): void => {
-    getToDoList(setToDos, setRefetch);
-  }, [refetch]);
+    getToDoList().then((resp): void => {
+      setToDos(resp.data);
+    });
+  }, []);
 
   const [toDos, setToDos]: [
     ToDoModel[],

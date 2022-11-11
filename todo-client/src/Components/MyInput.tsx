@@ -18,11 +18,23 @@ export default function MyInput(props: Props) {
     setToDo("");
   }, [props.categ]);
 
-  const [refetch, setRefetch] = useState(false);
-
   useEffect((): void => {
-    getToDoList(props.setToDos, setRefetch);
-  }, [refetch]);
+    getToDoList().then((resp): void => {
+      props.setToDos(resp.data);
+    });
+  }, []);
+
+  const onAdd = (e: React.MouseEvent<HTMLElement, MouseEvent>): void => {
+    postToDo({
+      name: toDo,
+      isDone: false,
+      categoryId: props.categ.id,
+    }).then(function (response): void {
+      getToDoList().then((resp): void => {
+        props.setToDos(resp.data);
+      });
+    });
+  };
 
   return (
     <div className="center-items">
@@ -32,7 +44,6 @@ export default function MyInput(props: Props) {
         value={toDo}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
           setToDo(e.target.value);
-          console.log(props.categ);
         }}
         style={{ width: "25%" }}
         placeholder={"add toDo to " + (props.categ.name || "...")}
@@ -42,13 +53,7 @@ export default function MyInput(props: Props) {
         type="primary"
         size="middle"
         onClick={(e: React.MouseEvent<HTMLElement, MouseEvent>) => {
-          console.log(toDo);
-          postToDo({
-            name: toDo,
-            isDone: false,
-            categoryId: props.categ.id,
-          });
-          setRefetch(true);
+          onAdd(e);
         }}
       >
         Add

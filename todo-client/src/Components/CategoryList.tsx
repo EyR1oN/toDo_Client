@@ -10,20 +10,33 @@ type Props = {
 };
 
 export default function CategoryList(props: Props) {
-  const [refetch, setRefetch] = useState(false);
   const [categories, setCategories]: [
     CategoryModel[],
     React.Dispatch<React.SetStateAction<CategoryModel[]>>
   ] = useState<CategoryModel[]>([]);
 
   useEffect((): void => {
-    getCategories(setCategories, setRefetch);
-  }, [refetch]);
+    getCategories().then((resp): void => {
+      setCategories(resp.data);
+    });
+  }, []);
 
   const [category, setCategory]: [
     string,
     React.Dispatch<React.SetStateAction<string>>
   ] = useState<string>("");
+
+  const onAdd = (e: React.MouseEvent<HTMLElement, MouseEvent>): void => {
+    postCategory({ name: category })
+      .then(function (response): void {
+        getCategories().then((resp): void => {
+          setCategories(resp.data);
+        });
+      })
+      .catch(function (error): void {
+        console.log(error);
+      });
+  };
 
   return (
     <>
@@ -48,9 +61,7 @@ export default function CategoryList(props: Props) {
         type="primary"
         size="middle"
         onClick={(e: React.MouseEvent<HTMLElement, MouseEvent>) => {
-          console.log(category);
-          postCategory({ name: category });
-          setRefetch(true);
+          onAdd(e);
         }}
       >
         Add

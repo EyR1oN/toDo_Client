@@ -13,22 +13,44 @@ import { deleteToDo, getToDoList, putToDo } from "../api/toDoApi";
 import { Input, Modal } from "antd";
 
 const { confirm } = Modal;
+
 type Props = {
   toDo: any;
   setToDos: React.Dispatch<React.SetStateAction<ToDoModel[]>>;
 };
 
 export default function ToDo(props: Props) {
-  const [refetch, setRefetch] = useState(false);
-
   const [toDoName, setToDoName]: [
     string,
     React.Dispatch<React.SetStateAction<string>>
   ] = useState<string>("");
 
   useEffect((): void => {
-    getToDoList(props.setToDos, setRefetch);
-  }, [refetch]);
+    getToDoList().then((resp): void => {
+      props.setToDos(resp.data);
+    });
+  }, []);
+
+  const onRename = (): void => {
+    let model: ToDoModel = props.toDo;
+    model.name = toDoName;
+    putToDo(model).then(function (response): void {
+      getToDoList().then((resp): void => {
+        props.setToDos(resp.data);
+      });
+    });
+    setShowEditToDo(!showEditToDo);
+  };
+
+  const onChangeStatus = (): void => {
+    let toDoVal: ToDoModel = props.toDo;
+    toDoVal.isDone = !toDoVal.isDone;
+    putToDo(toDoVal).then(function (response): void {
+      getToDoList().then((resp): void => {
+        props.setToDos(resp.data);
+      });
+    });
+  };
 
   const [showEditToDo, setShowEditToDo]: [
     boolean,
@@ -44,11 +66,14 @@ export default function ToDo(props: Props) {
       okType: "danger",
       cancelText: "No",
       onOk() {
-        deleteToDo(props.toDo.id);
-        setRefetch(true);
+        deleteToDo(props.toDo.id).then(function (response): void {
+          getToDoList().then((resp): void => {
+            props.setToDos(resp.data);
+          });
+        });
       },
       onCancel() {
-        console.log("Cancel");
+        //console.log("Cancel");
       },
     });
   };
@@ -58,22 +83,12 @@ export default function ToDo(props: Props) {
       {props.toDo.isDone ? (
         <CheckSquareOutlined
           style={{ color: "green", fontSize: "large" }}
-          onClick={(): void => {
-            let toDoVal: ToDoModel = props.toDo;
-            toDoVal.isDone = !toDoVal.isDone;
-            putToDo(toDoVal);
-            setRefetch(true);
-          }}
+          onClick={onChangeStatus}
         />
       ) : (
         <PlusSquareOutlined
           style={{ color: "blue", fontSize: "large" }}
-          onClick={(): void => {
-            let toDoVal: ToDoModel = props.toDo;
-            toDoVal.isDone = !toDoVal.isDone;
-            putToDo(toDoVal);
-            setRefetch(true);
-          }}
+          onClick={onChangeStatus}
         />
       )}
       <div>
@@ -106,13 +121,7 @@ export default function ToDo(props: Props) {
             ></Input>{" "}
             <CheckCircleOutlined
               style={{ color: "green", fontSize: "large" }}
-              onClick={() => {
-                let model: ToDoModel = props.toDo;
-                model.name = toDoName;
-                putToDo(model);
-                setRefetch(true);
-                setShowEditToDo(!showEditToDo);
-              }}
+              onClick={onRename}
             />
             <CloseSquareOutlined
               style={{ color: "red", fontSize: "large" }}
